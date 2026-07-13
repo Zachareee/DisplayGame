@@ -1,0 +1,57 @@
+@page "/"
+@rendermode InteractiveServer
+@inject IJSRuntime JS
+@implements IAsyncDisposable
+@using DisplayGame.Model
+
+<PageTitle>Events</PageTitle>
+@if (game is not null)
+{
+<div style="display: inline-block;">
+  <h2>Now playing: </h2>
+  <div class="scroll-container">
+    <h2 style="display: inline-block;" class="autoscroll">@game?.Name @game?.Name </h2>
+  </div>
+</div>
+<img src="@game?.Thumbnail" height="72" style="display: inline-block;"/>
+}
+
+@code {
+  private GameRecord? game;
+  private DotNetObjectReference<Events>? dotNetRef;
+  private IJSObjectReference? jsModule;
+
+  protected override async Task OnAfterRenderAsync(bool firstRender)
+  {
+    if (firstRender)
+    {
+      dotNetRef = DotNetObjectReference.Create(this);
+
+      jsModule = await JS.InvokeAsync<IJSObjectReference>("import", "./js/sse.js");
+
+      await jsModule.InvokeVoidAsync("start", dotNetRef);
+    }
+  }
+
+  public async ValueTask DisposeAsync()
+  {
+    if (jsModule is not null)
+    {
+      try
+      {
+        await jsModule.InvokeVoidAsync("stop");
+        await jsModule.DisposeAsync();
+      }
+      catch
+      {}
+    }
+    dotNetRef?.Dispose();
+  }
+
+  [JSInvokable]
+  public void OnEventReceived(GameRecord item)
+  {
+    game = item;
+    InvokeAsync(StateHasChanged);
+  }
+}
