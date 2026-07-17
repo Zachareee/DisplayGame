@@ -1,11 +1,13 @@
 import 'dart:async';
-import 'package:display_game_configurer/components/search_header.dart';
-import 'package:display_game_configurer/components/search_table.dart';
-import 'package:display_game_configurer/utils/igdbcover.dart';
+import './search_header.dart';
+import './search_table.dart';
+import '../utils/igdbcover.dart';
 import 'package:flutter/material.dart';
 
 class SearchPanel extends StatefulWidget {
-  const SearchPanel({super.key});
+  const SearchPanel({super.key, required this.addEntry});
+
+  final Function(TextEditingController, String, String) addEntry;
 
   @override
   State<SearchPanel> createState() => _SearchPanelState();
@@ -29,10 +31,6 @@ class _SearchPanelState extends State<SearchPanel> {
     });
   }
 
-  void updateTable(List<Game> games) => setState(() {
-    table = games;
-  });
-
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -41,7 +39,7 @@ class _SearchPanelState extends State<SearchPanel> {
         spacing: 32,
         children: [
           SearchHeader(onSearchChanged: _onSearchChanged),
-          SearchTable(table: table),
+          SearchTable(table: table, addEntry: widget.addEntry),
         ],
       ),
     );

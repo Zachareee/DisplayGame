@@ -12,7 +12,7 @@ class SearchHeader extends StatefulWidget {
 }
 
 class _SearchHeader extends State<SearchHeader> {
-  int rowCount = rowCounts.first;
+  int rowCount = rowCounts[1];
   String query = "";
 
   void updateSearch() => widget._onSearchChanged(query, rowCount);
