@@ -9,19 +9,31 @@ public sealed record GameRecord(string Name, string Thumbnail);
 public record Config(Dictionary<string, Regex> Patterns, Dictionary<string, GameRecord> Records)
 {
     private static Config _instance;
+    private static FileSystemWatcher watcher = new(Path.GetFullPath("."), "config.json") { EnableRaisingEvents = true, NotifyFilter = NotifyFilters.LastWrite };
 
     static Config()
     {
+        _instance = OnChanged();
+        watcher.Changed += OnChanged;
+    }
+
+    private static void OnChanged(object sender, FileSystemEventArgs e)
+    {
+        _instance = OnChanged();
+    }
+
+    private static Config OnChanged()
+    {
         var i = JsonSerializer.Deserialize<Config>(
-            File.ReadAllBytes(@"./config.json"),
+            File.Open(@"./config.json", FileMode.Open, FileAccess.Read, FileShare.ReadWrite),
             new JsonSerializerOptions()
             {
                 PropertyNameCaseInsensitive = true,
                 Converters = { new RegexConverter() }
             }
             );
-        if (i is null) throw new NullReferenceException();
-        _instance = i;
+        if (i is null) throw new FileLoadException("File not found: config.json");
+        return i;
     }
 
     public static bool GetGame(string app, string cmdline, out GameRecord Game)
