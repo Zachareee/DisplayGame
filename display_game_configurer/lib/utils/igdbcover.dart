@@ -1,10 +1,6 @@
 import "dart:convert";
 import "package:http/http.dart";
-import "package:dotenv/dotenv.dart";
-
-var env = DotEnv()..load([".env"]);
-var clientID = env["TTVclientID"]!;
-var clientSecret = env["TTVclientS"]!;
+import "package:flutter_dotenv/flutter_dotenv.dart";
 
 typedef Game = ({
   String name,
@@ -22,15 +18,20 @@ class Igdbcover {
 
   static Future<Igdbcover> authenticate() async {
     if (_instance case final instance?) return instance;
+
+    final clientID = dotenv.get("TTVclientID");
+    final clientSecret = dotenv.get("TTVclientS");
     var res = await post(
       Uri.parse(
         "https://id.twitch.tv/oauth2/token?client_id=$clientID&client_secret=$clientSecret&grant_type=client_credentials",
       ),
     );
-    return _instance = Igdbcover._().._authToken = jsonDecode(res.body)["access_token"];
+    return _instance = Igdbcover._()
+      .._authToken = jsonDecode(res.body)["access_token"];
   }
 
   Future<dynamic> authenticatedPost(String url, body) async {
+    final clientID = dotenv.get("TTVclientID");
     return jsonDecode(
       (await post(
         Uri.parse(url),

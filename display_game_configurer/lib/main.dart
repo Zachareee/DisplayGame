@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'components/search_panel.dart';
 import 'components/config_panel.dart';
 import 'components/config_header.dart';
 import 'utils/config_editor.dart';
 
-void main() {
+void main() async {
+  await dotenv.load();
   runApp(const MyApp());
 }
 
