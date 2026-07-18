@@ -45,25 +45,23 @@ class SearchTable extends AbstractTable {
   }
 
   @override
-  List<TableRow> content(BuildContext context) => table.map((row) {
-    return TableRow(
-      children: [
-        ...[
-          row.name,
-          DateTime.fromMillisecondsSinceEpoch(
-            (row.firstReleaseDate ?? 0) * 1000,
-          ).toIso8601String().split("T")[0],
-          row.platforms?.join(", ") ?? "",
-        ].map((s) => Text(s, textAlign: .center)),
-        Image(image: NetworkImage(row.cover), height: 64),
-        Center(
-          child: ElevatedButton.icon(
-            onPressed: () => searchDialog(context, row),
-            icon: const Icon(Icons.add),
-            label: const Text("Add"),
-          ),
+  List<List<Widget>> content(BuildContext context) => table.map((row) {
+    return [
+      ...[
+        row.name,
+        DateTime.fromMillisecondsSinceEpoch(
+          (row.firstReleaseDate ?? 0) * 1000,
+        ).toIso8601String().split("T")[0],
+        row.platforms?.join(", ") ?? "",
+      ].map((s) => Text(s, textAlign: .center)),
+      Image(image: NetworkImage(row.cover), height: 64),
+      Center(
+        child: ElevatedButton.icon(
+          onPressed: () => searchDialog(context, row),
+          icon: const Icon(Icons.add),
+          label: const Text("Add"),
         ),
-      ].map((value) => TableCell(child: value)).toList(),
-    );
+      ),
+    ];
   }).toList();
 }

@@ -7,7 +7,6 @@ class ConfigTable extends AbstractTable {
   ConfigTable({
     super.key,
     super.header = const ["App name", "Title", "Cover", "Action"],
-    super.columnWidths = const {2: IntrinsicColumnWidth()},
     required this.config,
     required this._removeEntry,
   });
@@ -15,34 +14,48 @@ class ConfigTable extends AbstractTable {
   final List<ConfigSet> config;
   final Function(int) _removeEntry;
 
+  Future<dynamic> configDialog(BuildContext context, String appname, int idx) {
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Are you sure you want to delete $appname"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text("Cancel"),
+          ),
+          TextButton(
+            onPressed: () {
+              _removeEntry(idx);
+              Navigator.of(context).pop();
+            },
+            child: const Text("Delete"),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
-  List<TableRow> content(BuildContext context) =>
+  List<List<Widget>> content(BuildContext context) =>
       config.asMap().entries.map((entry) {
         final MapEntry(:key, :value) = entry;
-        return TableRow(
-          children: [
-            TableCell(
-              child: TextField(
-                controller: value.appname,
-                textAlign: .center,
-                minLines: null,
-                maxLines: null,
-              ),
+        return [
+          TextField(
+            controller: value.appname,
+            textAlign: .center,
+            minLines: null,
+            maxLines: null,
+          ),
+          Text(value.title, textAlign: .center),
+          Image(image: NetworkImage(value.thumbnail), height: 64),
+          Center(
+            child: ElevatedButton.icon(
+              onPressed: () => configDialog(context, value.appname.text, key),
+              label: const Text("Remove"),
+              icon: const Icon(Icons.remove),
             ),
-            TableCell(child: Text(value.title, textAlign: .center)),
-            TableCell(
-              child: Image(image: NetworkImage(value.thumbnail), height: 64),
-            ),
-            TableCell(
-              child: Center(
-                child: ElevatedButton.icon(
-                  onPressed: () => _removeEntry(key),
-                  label: const Text("Remove"),
-                  icon: const Icon(Icons.remove),
-                ),
-              ),
-            ),
-          ],
-        );
+          ),
+        ];
       }).toList();
 }

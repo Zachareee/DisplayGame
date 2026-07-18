@@ -22,11 +22,21 @@ abstract class AbstractTable extends StatelessWidget {
 
   late final TableRow header;
   final Map<int, TableColumnWidth>? columnWidths;
-  List<TableRow> content(BuildContext context);
+  List<List<Widget>> content(BuildContext context);
 
   List<TableRow> _convertToRows(BuildContext context) => [
     header,
-    ...content(context),
+    ...content(context).map(
+      (e) => TableRow(
+        children: e
+            .map(
+              (f) => TableCell(
+                child: Padding(padding: .all(6), child: f),
+              ),
+            )
+            .toList(),
+      ),
+    ),
   ];
 
   @override
