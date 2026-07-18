@@ -18,7 +18,7 @@ class ConfigTable extends AbstractTable {
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Are you sure you want to delete $appname"),
+        title: Text("Are you sure you want to delete $appname?"),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -44,8 +44,8 @@ class ConfigTable extends AbstractTable {
           TextField(
             controller: value.appname,
             textAlign: .center,
-            minLines: null,
-            maxLines: null,
+            minLines: 1,
+            maxLines: 3,
           ),
           Text(value.title, textAlign: .center),
           Image(image: NetworkImage(value.thumbnail), height: 64),

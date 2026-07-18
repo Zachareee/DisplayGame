@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const List<int> rowCounts = [5, 10, 25, 50, 100, 200, 500];
+const List<int> _rowCounts = [5, 10, 25, 50, 100, 200, 500];
 
 class SearchHeader extends StatefulWidget {
   const SearchHeader({super.key, required this._onSearchChanged});
@@ -12,7 +12,7 @@ class SearchHeader extends StatefulWidget {
 }
 
 class _SearchHeader extends State<SearchHeader> {
-  int rowCount = rowCounts[1];
+  int rowCount = _rowCounts[1];
   String query = "";
 
   void updateSearch() => widget._onSearchChanged(query, rowCount);
@@ -36,7 +36,7 @@ class _SearchHeader extends State<SearchHeader> {
         ),
         DropdownButton(
           value: rowCount,
-          items: rowCounts
+          items: _rowCounts
               .map(
                 (value) => DropdownMenuItem(
                   value: value,

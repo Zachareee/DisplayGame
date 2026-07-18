@@ -20,15 +20,16 @@ class _SearchPanelState extends State<SearchPanel> {
   // https://stackoverflow.com/a/52930197/7011902
   void _onSearchChanged(String query, int rowCount) {
     if (_debounce?.isActive ?? false) _debounce?.cancel();
-    _debounce = Timer(const .new(milliseconds: 500), () {
-      Igdbcover.authenticate()
+    _debounce = Timer(
+      const .new(milliseconds: 500),
+      () => Igdbcover.authenticate()
           .then((value) => value.search(query, limit: rowCount))
           .then(
             (result) => setState(() {
               table = result;
             }),
-          );
-    });
+          ),
+    );
   }
 
   @override

@@ -26,8 +26,6 @@ public static class Callback
         String cmdline = GetCommandLineByPid(pid);
         if (Config.GetGame(appname, cmdline, out GameRecord Game))
             Queue.Add(Game);
-        else
-            Console.WriteLine($"{appname} : {cmdline}");
     }
 
     public static string GetCommandLineByPid(int pid)

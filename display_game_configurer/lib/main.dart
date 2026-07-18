@@ -76,8 +76,8 @@ class _MyHomePage extends State<MyHomePage> {
               )
               .toList(),
         ),
-        label: Text("Save"),
-        icon: Icon(Icons.save),
+        label: const Text("Save"),
+        icon: const Icon(Icons.save),
       ),
     );
   }

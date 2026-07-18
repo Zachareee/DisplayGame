@@ -1,6 +1,7 @@
 import './abstract_table.dart';
 import '../utils/igdbcover.dart';
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
 
 class SearchTable extends AbstractTable {
   SearchTable({
@@ -14,11 +15,11 @@ class SearchTable extends AbstractTable {
     ],
     super.columnWidths = const {1: IntrinsicColumnWidth()},
     required this.table,
-    required this.addEntry,
+    required this._addEntry,
   });
 
   final List<Game> table;
-  final Function(TextEditingController, String, String) addEntry;
+  final Function(TextEditingController, String, String) _addEntry;
 
   Future<dynamic> searchDialog(BuildContext context, Game row) {
     TextEditingController controller = .new();
@@ -26,7 +27,28 @@ class SearchTable extends AbstractTable {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text("Set app name"),
-        content: TextField(controller: controller),
+        content: Row(
+          children: [
+            Expanded(child: TextField(controller: controller)),
+            ElevatedButton.icon(
+              onPressed: () {
+                FilePicker.pickFiles(
+                  dialogTitle: "Pick a file",
+                  type: .any,
+                ).then((file) {
+                  if (file?.files.first case final f?) {
+                    controller.text = f.name.replaceFirst(
+                      RegExp(r'\.[^\.]+$'),
+                      "",
+                    );
+                  }
+                });
+              },
+              label: const Text("Use file"),
+              icon: const Icon(Icons.folder),
+            ),
+          ],
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -34,7 +56,7 @@ class SearchTable extends AbstractTable {
           ),
           TextButton(
             onPressed: () {
-              addEntry(controller, row.name, row.cover);
+              _addEntry(controller, row.name, row.cover);
               Navigator.of(context).pop();
             },
             child: const Text("Save app name"),

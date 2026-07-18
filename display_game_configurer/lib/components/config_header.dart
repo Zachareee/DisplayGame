@@ -43,7 +43,7 @@ class _ConfigHeader extends State<ConfigHeader> {
             }
           },
           label: const Text("Load"),
-          icon: Icon(Icons.upload),
+          icon: const Icon(Icons.upload),
         ),
       ],
     );
